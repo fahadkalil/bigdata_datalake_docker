@@ -20,18 +20,15 @@ services:
         command: [ "server", "--console-address", ":9001", "/data" ]
         volumes:
             - minio_data:/data
-        
-    # minio-buckets:
-    #     image: minio/mc:latest
-    #     depends_on:
-    #         - minio
-    #     restart: on-failure
-    #     entrypoint: >
-    #         /bin/sh -c "
-    #         /usr/bin/mc alias set dockerminio http://minio:9000 minioadmin minioadmin;
-    #         /usr/bin/mc mb dockerminio/yourbucketname;
-    #         exit 0;
-    #         "
     
-    volumes:
-        minio_data:
+    # minio-mc-shell:
+    #     image: minio/mc:latest
+    #     container_name: minio-mc-shell        
+    #     command: >
+    #         /bin/sh -c "
+    #         sleep 5;
+    #         /usr/bin/mc alias set dockerminio http://minio:9000 minioadmin minioadmin;
+    #         "
+
+volumes:
+    minio_data:
