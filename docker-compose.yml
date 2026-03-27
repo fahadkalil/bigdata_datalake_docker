@@ -22,13 +22,15 @@ services:
             - minio_data:/data
     
     # minio-mc-shell:
-    #     image: minio/mc:latest
-    #     container_name: minio-mc-shell        
-    #     command: >
-    #         /bin/sh -c "
-    #         sleep 5;
-    #         /usr/bin/mc alias set dockerminio http://minio:9000 minioadmin minioadmin;
-    #         "
+        # image: minio/mc:latest
+        # container_name: minio-mc-shell
+        # depends_on:
+        #     - minio
+        # restart: on-failure
+        # entrypoint: [ "/bin/sh", "-c", "/bin/bash" ] 
+        # tty: true 
+        # command: >             
+        #    mc alias set dockerminio http://minio:9000 minioadmin minioadmin;
 
 volumes:
     minio_data:
