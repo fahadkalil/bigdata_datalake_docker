@@ -1,36 +1,38 @@
 services:
-    minio:
-        image: minio/minio:latest
-        container_name: minio
-        environment:
-            MINIO_ROOT_USER: minioadmin
-            MINIO_ROOT_PASSWORD: minioadmin            
-            # Optional: Automatically create a default bucket on startup
-            MINIO_DEFAULT_BUCKETS: 'testbucket'            
-            # Parquet is DISABLED by default since hostile crafted input can easily crash the server.
-            MINIO_API_SELECT_PARQUET: on
+    alarik:
+        image: ghcr.io/achtungsoftware/alarik:latest
+        restart: unless-stopped
         ports:
-            - 9000:9000
-            - 9001:9001
-        healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
-            interval: 30s
-            timeout: 10s
-            retries: 5
-        command: [ "server", "--console-address", ":9001", "/data" ]
+        - "9000:8080" # S3 API        
+        environment:
+        - API_BASE_URL=http://localhost:9000
+        - CONSOLE_BASE_URL=http://localhost:3000
+        - ADMIN_USERNAME=alarik
+        - ADMIN_PASSWORD=alarik
+        - JWT=vYc5ua8IP0eD6U5TEkkLkKjzPdI7fR77iFmDC5vnRpQ
+        - ALLOW_ACCOUNT_CREATION=false
+        - DEFAULT_BUCKETS=default
         volumes:
-            - minio_data:/data
-    
-    # minio-mc-shell:
-        # image: minio/mc:latest
-        # container_name: minio-mc-shell
-        # depends_on:
-        #     - minio
-        # restart: on-failure
-        # entrypoint: [ "/bin/sh", "-c", "/bin/bash" ] 
-        # tty: true 
-        # command: >             
-        #    mc alias set dockerminio http://minio:9000 minioadmin minioadmin;
+        - alarik_data:/data
+
+    alarik-web-console:
+        image: ghcr.io/achtungsoftware/alarik-console:latest
+        restart: unless-stopped
+        ports:
+        - "3000:3000" # Web Console
+        environment:
+        - NUXT_PUBLIC_API_BASE_URL=http://localhost:9000
+        - NUXT_PUBLIC_CONSOLE_BASE_URL=http://localhost:3000
+        - NUXT_PUBLIC_ALLOW_ACCOUNT_CREATION=false
+        - NUXT_API_BASE_URL=http://localhost:8080
+        depends_on:
+        - alarik
+
+    # Expose alarik to the internet using Cloudflare Tunnel (with random address)
+    cloudflare-tunnel:
+        image: cloudflare/cloudflared:latest
+        restart: unless-stopped
+        command: tunnel --url http://alarik-web-console:3000
 
 volumes:
-    minio_data:
+    alarik_data:
