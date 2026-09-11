@@ -17,4 +17,5 @@
 
 ## [opcional] Caso use o Cloudflare Tunnel para testes, a URL pública e aleatória para acessar o Web Console pode ser consultada usando o comando
 
+    # No Linux ou Mac
     docker compose logs cloudflare-tunnel | grep trycloudflare.com
