@@ -29,10 +29,10 @@ services:
         - alarik
 
     # Expose alarik to the internet using Cloudflare Tunnel (with random address)
-    cloudflare-tunnel:
-        image: cloudflare/cloudflared:latest
-        restart: unless-stopped
-        command: tunnel --url http://alarik-web-console:3000
+    #cloudflare-tunnel:
+    #    image: cloudflare/cloudflared:latest
+    #    restart: unless-stopped
+    #    command: tunnel --url http://alarik-web-console:3000
 
 volumes:
     alarik_data:
