@@ -14,6 +14,11 @@ services:
             - JWT=vYc5ua8IP0eD6U5TEkkLkKjzPdI7fR77iFmDC5vnRpQ
             - ALLOW_ACCOUNT_CREATION=false
             - DEFAULT_BUCKETS=default
+            # Chaves S3 fixas (usadas pelo Flink e pelo boto3 no desafio "Corrida de Dados").
+            # Devem ser as mesmas definidas no docker-compose.yml do bigdata_docker.
+            - ALARIK_REGION=${ALARIK_REGION:-us-east-1}
+            - DEFAULT_ACCESS_KEY=${ALARIK_ACCESS_KEY:-ALARIKDESAFIO0000001}
+            - DEFAULT_SECRET_KEY=${ALARIK_SECRET_KEY:-alarikdesafio-secret-key-0000000000000001}
         volumes:
             - alarik_data:/data
         networks:
